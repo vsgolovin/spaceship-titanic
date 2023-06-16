@@ -29,10 +29,16 @@ def main(src: str, dst: str):
     np.save(dst, X, allow_pickle=False)
 
     # save labels if processing train set
+    # or passenger ids if processing test set
     label_col = "Transported"
+    out_dir = Path(dst).parent
     if label_col in df.columns:
-        outfile = Path(dst).parent / "labels.npy"
+        outfile = out_dir / "labels.npy"
         np.save(outfile, df[label_col].to_numpy(dtype=int))
+    else:
+        with open(out_dir / "passenger_ids.txt", "w") as fout:
+            for pid in df["PassengerId"]:
+                fout.write(f"{pid}\n")
 
 
 if __name__ == "__main__":
